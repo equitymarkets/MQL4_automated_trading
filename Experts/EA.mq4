@@ -37,6 +37,11 @@ double pips;
 int i;
    
 //345678911234567892123456789312345678941234567895123456789612345678971234567898
+
+double CalculateSpread(double bid, double ask)
+  {
+   return(ask-bid);
+  }
 bool CheckOpenOrders()
   { 
    for(i = 0 ; i < OrdersTotal() ; i++ ) 
