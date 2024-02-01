@@ -1,4 +1,4 @@
-# MQL4_automated_trading
+# MQL4/5_automated_trading
 
 EA.mq4 is the template file, not to be used in any serious trading system. Most other EAs are variations of this, using various combinations of technical indicators. 
 
