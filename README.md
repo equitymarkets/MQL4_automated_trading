@@ -4,8 +4,6 @@ EA.mq4 is the template file, not to be used in any serious trading system. Most 
 
 Fibonaccis as inputs seem to show better results. 
 
-None show consistent risk-adjusted returns. 
-
 I have more stuff in progress. 
 
 Feel free to use but please share if you can tweak them to get better results. I'd be happy to collaborate with you if you're serious about developing a strategy. 
