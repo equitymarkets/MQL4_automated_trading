@@ -1,6 +1,6 @@
 # MQL4/5_automated_trading
 
-EA.mq4 is the template file, not to be used in any serious trading system. Most other EAs are variations of this, using various combinations of technical indicators. 
+EA.mq4 is the template file, to be used as a template for any future trading system. Most other EAs are variations of this, using various combinations of technical indicators. 
 
 Fibonaccis as inputs seem to show better results. 
 
