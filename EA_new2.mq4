@@ -23,22 +23,44 @@ enum chartTimeframe
 
 enum randomTimeEntry 
   {
-   ON = 1,
-   OFF = 0
+   RandomOn = 1,
+   RandomOff = 0
   };
-
-input int MagicNumber = 1234;
+enum stopLosses
+  {
+   StopsOn = 1,
+   StopsOff = 0
+  };
+enum takeProfit
+  {
+   LimitsOn = 1,
+   LimitsOff = 0
+  };
+  
+input int MagicNumber = 1234, StopInPips = 5, TakeProfitInPips=5;
 input double LotSize = .1;
 input chartTimeframe Timeframe = 0;
 input randomTimeEntry RandomTimeEntry = 0;
+input stopLosses StopLoss = 0;
+input takeProfit TakeProfit = 0;
 
-void OrderEntry(int timeframe, double lot_size, int magic_number) 
+void OrderEntry(int timeframe, bool stop_loss, int stop_in_pips, bool take_profit, int take_profit_in_pips, double lot_size, int magic_number) 
   {
    int entry;
+   double stop_price = 0; 
+   double take_profit_price = 0;
    if(iClose(_Symbol,timeframe,1) > iClose(_Symbol,timeframe,2))
      {
+      if(stop_loss)
+        {
+         stop_price = Ask - (stop_in_pips*_Point);
+        }
+      if(take_profit)
+        {
+         take_profit_price = Ask + (take_profit_in_pips*_Point);
+        }
       entry = OrderSend(_Symbol,OP_BUY,lot_size,
-      Ask,0,0,0,"Buy Entry",magic_number,0,clrGreen);
+      Ask,0,stop_price,take_profit_price,"Buy Entry",magic_number,0,clrGreen);
         {
          if(entry > -1)
            {
@@ -52,8 +74,16 @@ void OrderEntry(int timeframe, double lot_size, int magic_number)
      }
    if(iClose(_Symbol,timeframe,1) < iClose(_Symbol,timeframe,2))
      {
+      if(stop_loss)
+        {
+         stop_price = Bid + (stop_in_pips*_Point);
+        }
+      if(take_profit)
+        {
+         take_profit_price = Bid - (take_profit_in_pips*_Point);
+        }
       entry = OrderSend(_Symbol,OP_SELL,lot_size,
-      Bid,0,0,0,"Sell Entry",magic_number,0,clrRed);
+      Bid,0,stop_price,take_profit_price,"Sell Entry",magic_number,0,clrRed);
         {
          if(entry > -1)
            {
@@ -126,6 +156,7 @@ bool Entropy(int timeframe)
   {
    datetime current_time = TimeCurrent();
    datetime trade_time;
+   
    if(timeframe==0)
      {
       trade_time = iTime(_Symbol,Period(),0)+
@@ -172,7 +203,7 @@ void OnTick()
       if(!RandomTimeEntry || MarketInfo(Symbol(),MODE_TIME) >= 
       (iTime(Symbol(),timeframe,0) + time_to_trade_addition))
         {
-         OrderEntry(timeframe,LotSize,MagicNumber);
+         OrderEntry(timeframe, StopLoss, StopInPips, TakeProfit, TakeProfitInPips, LotSize, MagicNumber);
         }
      }
    else 
