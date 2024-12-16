@@ -1,6 +1,8 @@
 # MQL4/5_automated_trading
 
-EA.mq4 is the template file, to be used as a template for any future trading system. Most other EAs are variations of this, using various combinations of technical indicators. 
+EA.mq4 (available in the EA directory) is the source code for most of the files and has recently been refactored for a smoother user experiance. It is designed as a template, but currently uses a simple trading rule as an example-enter trades when price exceeds the previous bar, price exceeds the 21-period moving average, and current 21-period moving average exceeds prior 21-period moving average. It takes long and short trades based on this criteria.  
+
+
 
 Fibonaccis as inputs seem to show better results. 
 
