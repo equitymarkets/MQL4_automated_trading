@@ -6,6 +6,8 @@ The Random Time variable, if switched on, selects a random time in the first 6th
 
 Stops and take profits can be switched on or off. 
 
+The Paper Trade Tester, if switched on, tests to make sure a strategy is working before allowing live trades, then resets each week. 
+
 Fibonaccis as inputs seem to show better results. 
 
 I have more stuff in progress. 
