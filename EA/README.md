@@ -1,4 +1,4 @@
-##EA.MQ4 Source Code and Executatable
+#EA MQ4 Source Code and Executatable
 
 EA.mq4  is the source code for most of the files and has recently been refactored for a smoother user experience. It is designed as a template, but currently uses a simple trading rule as an example-enter trades when price exceeds the previous bar, price exceeds the 21-period moving average, and current 21-period moving average exceeds prior 21-period moving average. It takes long and short trades based on this criteria.
 
