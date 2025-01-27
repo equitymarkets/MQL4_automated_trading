@@ -7,6 +7,8 @@
 #property link      "https://www.laserdesign.io"
 #property strict
 
+input group "Trade Settings";
+
 enum chartTimeframe
   {
    CURRENT = 0,
@@ -33,8 +35,8 @@ enum stopLosses
   };
 enum takeProfit
   {
-   LimitsOn = 1,
-   LimitsOff = 0
+   TakeProfitOn = 1,
+   TakeProfitOff = 0
   };
 enum paperTradeTest
   {
@@ -263,6 +265,7 @@ void OnTick()
      }
      
    static bool trade_allowed = false;
+   
    if(iTime(Symbol(),timeframe,0) - iTime(Symbol(),timeframe,1) > 25200) 
      {
       trade_allowed = false;
@@ -299,8 +302,11 @@ void OnTick()
      { 
       bool profitable_exit = OrderExit(timeframe, MovingAverage, MovingAverageType, 
       MagicNumber);
-      if(profitable_exit) { trade_allowed=true; }
-      time_to_trade_addition = ((MathRand()/3600)*timeframe);
+      if(profitable_exit) 
+        { 
+         trade_allowed=true; 
+         time_to_trade_addition = ((MathRand()/3600)*timeframe);
+        }
      }
   }
 //+------------------------------------------------------------------+
