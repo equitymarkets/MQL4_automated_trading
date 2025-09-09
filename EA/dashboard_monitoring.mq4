@@ -79,74 +79,40 @@ CAppDialog obj_Main_APP;
 //34567891123456789212345678931234567894123456789512345678961234567897123456789812345678991234567891
 //|                                                                 Expert initialization function |
 //34567891123456789212345678931234567894123456789512345678961234567897123456789812345678991234567891
-
+  
 int OnInit()
   {
-   //Create Application
-   obj_Main_APP.Create(0,Main_APP,0,15,15,0,0);
-   obj_Main_APP.Run();
-   
-   //Main Container   
-   obj_Main_APP.Add(obj_Btn_MAIN);
-   obj_Btn_MAIN.Create(0,Btn_MAIN,0,15,15,0,0);
-   obj_Btn_MAIN.Size(300,335);
-   obj_Btn_MAIN.ColorBackground(clrLightGray);
-   
-   //Pair Notation
-   obj_Lbl_PAIR.Create(0,Lbl_PAIR,0,20,25,0,0);
-   obj_Lbl_PAIR.Text("Pair: ");
-   obj_Lbl_PAIR.FontSize(18);
-   obj_Lbl_PAIR.Font("Arial");
-   
-   obj_Edit_PAIR.Create(0,Edit_PAIR,0,210,25,0,0);
-   obj_Edit_PAIR.Text(_Symbol);
-   obj_Edit_PAIR.Size(100,35);
-   obj_Edit_PAIR.Color(clrBlack);
-   obj_Edit_PAIR.ColorBackground(clrLightBlue);
-   obj_Edit_PAIR.Font("Times new roman");
-   obj_Edit_PAIR.FontSize(16);
-   
-   //Active Buys/Sells
-   obj_Lbl_BUY.Create(0,Lbl_BUY,0,20,65,0,0);
-   obj_Lbl_BUY.Text("Active Buys: ");
-   obj_Lbl_BUY.FontSize(18);
-   obj_Lbl_BUY.Font("Arial");
-   
-   obj_Lbl_SELL.Create(0,Lbl_SELL,0,20,105,0,0);
-   obj_Lbl_SELL.Text("Active Sells: ");
-   obj_Lbl_SELL.FontSize(18);
-   obj_Lbl_SELL.Font("Arial");
-   
-   //Total Profit
-   obj_Lbl_PROFIT.Create(0,Lbl_PROFIT,0,20,145,0,0);
-   obj_Lbl_PROFIT.Text("Closed P/L: ");
-   obj_Lbl_PROFIT.FontSize(18);
-   obj_Lbl_PROFIT.Font("Arial");
-   
-   //Open Groups
-   obj_Lbl_GROUPS.Create(0,Lbl_GROUPS,0,20,185,0,0);
-   obj_Lbl_GROUPS.Text("Open Groups: ");
-   obj_Lbl_GROUPS.FontSize(18);
-   obj_Lbl_GROUPS.Font("Arial");
-   
-   //Account Equity
-   obj_Lbl_EQUITY.Create(0,Lbl_EQUITY,0,20,225,0,0);
-   obj_Lbl_EQUITY.Text("Account Equity: ");
-   obj_Lbl_EQUITY.FontSize(18);
-   obj_Lbl_EQUITY.Font("Arial");
-   
-   //Account Balance
-   obj_Lbl_BALANCE.Create(0,Lbl_BALANCE,0,20,265,0,0);
-   obj_Lbl_BALANCE.Text("Account Balance: ");
-   obj_Lbl_BALANCE.FontSize(18);
-   obj_Lbl_BALANCE.Font("Arial");
-   
-   obj_Lbl_DRAWDOWN.Create(0,Lbl_DRAWDOWN,0,20,305,0,0);
-   obj_Lbl_DRAWDOWN.Text("Max Drawdown: ");
-   obj_Lbl_DRAWDOWN.Font("Arial");
-   obj_Lbl_DRAWDOWN.FontSize(18);
+   DashCreate();
    
    return(INIT_SUCCEEDED);
+  }
+   
+//34567891123456789212345678931234567894123456789512345678961234567897123456789812345678991234567891
+//|                                                                 Expert on chart event function |
+//34567891123456789212345678931234567894123456789512345678961234567897123456789812345678991234567891
+
+void OnChartEvent(const int id, const long &lparam, const double &dparam, const string &sparam)
+  {
+   obj_Main_APP.ChartEvent(id,lparam,dparam,sparam);
+  }
+  
+//34567891123456789212345678931234567894123456789512345678961234567897123456789812345678991234567891
+//|                                                               Expert deinitialization function |
+//34567891123456789212345678931234567894123456789512345678961234567897123456789812345678991234567891
+
+void OnDeinit(const int reason)
+  {
+   obj_Main_APP.Destroy();
+  }
+
+//34567891123456789212345678931234567894123456789512345678961234567897123456789812345678991234567891
+//|                                                                           Expert tick function |
+//34567891123456789212345678931234567894123456789512345678961234567897123456789812345678991234567891
+
+void OnTick()
+   
+  {
+   DashUpdate();
   }
 
 //34567891123456789212345678931234567894123456789512345678961234567897123456789812345678991234567891
@@ -215,50 +181,95 @@ int CountPairs()
    return pairs_count;
   }
   
-  
-  
-  
-//?????????????????????????????????????????????????????????????????????????????????????????????????? 
+double GetMaxDrawdown()
+{
+   static double equity_peak   = 0;
+   static double max_drawdown  = 0;
 
-double DrawdownCalc()
+   double equity = AccountEquity();
+
+   // Update peak equity if a new high is reached
+   if(equity > equity_peak)
+      equity_peak = equity;
+
+   // Calculate drawdown from the current peak
+   double drawdown = equity_peak - equity;
+
+   // Update max drawdown if this one is larger
+   if(drawdown > max_drawdown)
+      max_drawdown = drawdown;
+
+   return NormalizeDouble(max_drawdown,2);  // absolute peak-to-trough drawdown
+}
+
+void DashCreate()
   {
-   double baseline = AccountBalance();
+   //Create Application
+   obj_Main_APP.Create(0,Main_APP,0,15,15,0,0);
+   obj_Main_APP.Run();
    
-   return baseline;
-  } 
+   //Main Container   
+   obj_Main_APP.Add(obj_Btn_MAIN);
+   obj_Btn_MAIN.Create(0,Btn_MAIN,0,15,15,0,0);
+   obj_Btn_MAIN.Size(300,335);
+   obj_Btn_MAIN.ColorBackground(clrLightGray);
    
-//?????????????????????????????????????????????????????????????????????????????????????????????????? 
-
-
-
-
- 
-//34567891123456789212345678931234567894123456789512345678961234567897123456789812345678991234567891
-//|                                                                        On chart event function |
-//34567891123456789212345678931234567894123456789512345678961234567897123456789812345678991234567891
-
-void OnChartEvent(const int id, const long &lparam, const double &dparam, const string &sparam)
-  {
-   obj_Main_APP.ChartEvent(id,lparam,dparam,sparam);
+   //Pair Notation
+   obj_Lbl_PAIR.Create(0,Lbl_PAIR,0,20,25,0,0);
+   obj_Lbl_PAIR.Text("Pair: ");
+   obj_Lbl_PAIR.FontSize(18);
+   obj_Lbl_PAIR.Font("Arial");
+   
+   obj_Edit_PAIR.Create(0,Edit_PAIR,0,210,25,0,0);
+   obj_Edit_PAIR.Text(_Symbol);
+   obj_Edit_PAIR.Size(100,35);
+   obj_Edit_PAIR.Color(clrBlack);
+   obj_Edit_PAIR.ColorBackground(clrLightBlue);
+   obj_Edit_PAIR.Font("Times new roman");
+   obj_Edit_PAIR.FontSize(16);
+   
+   //Active Buys/Sells
+   obj_Lbl_BUY.Create(0,Lbl_BUY,0,20,65,0,0);
+   obj_Lbl_BUY.Text("Active Buys: ");
+   obj_Lbl_BUY.FontSize(18);
+   obj_Lbl_BUY.Font("Arial");
+   
+   obj_Lbl_SELL.Create(0,Lbl_SELL,0,20,105,0,0);
+   obj_Lbl_SELL.Text("Active Sells: ");
+   obj_Lbl_SELL.FontSize(18);
+   obj_Lbl_SELL.Font("Arial");
+   
+   //Total Profit
+   obj_Lbl_PROFIT.Create(0,Lbl_PROFIT,0,20,145,0,0);
+   obj_Lbl_PROFIT.Text("Closed P/L: ");
+   obj_Lbl_PROFIT.FontSize(18);
+   obj_Lbl_PROFIT.Font("Arial");
+   
+   //Open Groups
+   obj_Lbl_GROUPS.Create(0,Lbl_GROUPS,0,20,185,0,0);
+   obj_Lbl_GROUPS.Text("Open Groups: ");
+   obj_Lbl_GROUPS.FontSize(18);
+   obj_Lbl_GROUPS.Font("Arial");
+   
+   //Account Equity
+   obj_Lbl_EQUITY.Create(0,Lbl_EQUITY,0,20,225,0,0);
+   obj_Lbl_EQUITY.Text("Account Equity: ");
+   obj_Lbl_EQUITY.FontSize(18);
+   obj_Lbl_EQUITY.Font("Arial");
+   
+   //Account Balance
+   obj_Lbl_BALANCE.Create(0,Lbl_BALANCE,0,20,265,0,0);
+   obj_Lbl_BALANCE.Text("Account Balance: ");
+   obj_Lbl_BALANCE.FontSize(18);
+   obj_Lbl_BALANCE.Font("Arial");
+   
+   obj_Lbl_DRAWDOWN.Create(0,Lbl_DRAWDOWN,0,20,305,0,0);
+   obj_Lbl_DRAWDOWN.Text("Max Drawdown: ");
+   obj_Lbl_DRAWDOWN.Font("Arial");
+   obj_Lbl_DRAWDOWN.FontSize(18);
   }
-  
-//34567891123456789212345678931234567894123456789512345678961234567897123456789812345678991234567891
-//|                                                               Expert deinitialization function |
-//34567891123456789212345678931234567894123456789512345678961234567897123456789812345678991234567891
 
-void OnDeinit(const int reason)
-  {
-
-   obj_Main_APP.Destroy();
-   
-  }
-
-//34567891123456789212345678931234567894123456789512345678961234567897123456789812345678991234567891
-//|                                                                           Expert tick function |
-//34567891123456789212345678931234567894123456789512345678961234567897123456789812345678991234567891
-
-void OnTick()
-   
+void DashUpdate()
   {
    obj_Edit_BUY.Create(0,Edit_BUY,0,210,65,0,0);
    obj_Edit_BUY.Text(string(BuyCounter()));
@@ -309,7 +320,7 @@ void OnTick()
    obj_Edit_BALANCE.FontSize(16);
    
    obj_Edit_DRAWDOWN.Create(0,Edit_DRAWDOWN,0,210,305,0,0);
-   obj_Edit_DRAWDOWN.Text(string(SignalBaseGetDouble(SIGNAL_BASE_MAX_DRAWDOWN)));
+   obj_Edit_DRAWDOWN.Text(string(GetMaxDrawdown()));
    obj_Edit_DRAWDOWN.Size(100,35);
    obj_Edit_DRAWDOWN.Color(clrBlack);
    obj_Edit_DRAWDOWN.ColorBackground(clrMistyRose);
